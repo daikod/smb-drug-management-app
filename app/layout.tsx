@@ -26,9 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}><StackProvider app={stackClientApp}><StackTheme>
-        {children}
-      </StackTheme></StackProvider></body>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <StackProvider app={stackClientApp}>
+          <StackTheme>{children}</StackTheme>
+        </StackProvider>
+      </body>
     </html>
   );
 }
+
