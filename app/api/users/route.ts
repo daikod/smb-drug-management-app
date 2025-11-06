@@ -1,41 +1,34 @@
-// app/api/users/route.ts
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { UserRole } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
 export async function GET() {
-  const currentUser = await getCurrentUser();
-
-  if (currentUser.role !== UserRole.ADMIN) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
-  const users = await prisma.user.findMany({
-    orderBy: { createdAt: "desc" },
-  });
-
+  const user = await getCurrentUser();
+  if (user.role !== "ADMIN") return new NextResponse("Forbidden", { status: 403 });
+  const users = await prisma.user.findMany();
   return NextResponse.json(users);
 }
 
 export async function POST(req: Request) {
-  const currentUser = await getCurrentUser();
-  if (currentUser.role !== UserRole.ADMIN) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const user = await getCurrentUser();
+  if (user.role !== "ADMIN") return new NextResponse("Forbidden", { status: 403 });
 
   const data = await req.json();
-
-  const newUser = await prisma.user.create({
-    data: {
-      email: data.email,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      password: data.password || "TEMP_PASSWORD",
-      role: data.role as UserRole,
-      phone: data.phone,
-    },
-  });
-
+  const newUser = await prisma.user.create({ data });
   return NextResponse.json(newUser);
+}
+
+
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  const data = await req.json();
+  const staff = await prisma.user.update({
+    where: { id: params.id },
+    data: { role: data.role },
+  });
+  return NextResponse.json(staff);
+}
+
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+  await prisma.user.delete({ where: { id: params.id } });
+  return NextResponse.json({ success: true });
 }

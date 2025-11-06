@@ -1,58 +1,57 @@
 "use client";
 
-import { useTransition } from "react";
-import { deleteStaff, updateRole } from "./actions";
+import { User, UserRole } from "@prisma/client";
 
-export default function StaffTable({ staff }: { staff: any[] }) {
-  const [isPending, startTransition] = useTransition();
+interface StaffTableProps {
+  users: User[];
+}
 
-  function handleDelete(id: string) {
-    startTransition(async () => {
-      await deleteStaff(id);
-      window.location.reload();
-    });
-  }
-
-  function handleRoleChange(id: string, newRole: string) {
-    startTransition(async () => {
-      await updateRole(id, newRole);
+export default function StaffTable({ users }: StaffTableProps) {
+  async function handleRoleChange(id: string, role: UserRole) {
+    await fetch(`/api/staff/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role }),
     });
   }
 
   return (
-    <div>
-      <h2 className="font-semibold text-lg mb-2">All Staff</h2>
-      <table className="w-full text-sm border-collapse border">
+    <div className="overflow-x-auto bg-white shadow rounded-lg mt-6">
+      <table className="min-w-full table-auto">
         <thead>
           <tr className="bg-gray-100 text-left">
-            <th className="p-2 border">Name</th>
-            <th className="p-2 border">Email</th>
-            <th className="p-2 border">Role</th>
-            <th className="p-2 border">Actions</th>
+            <th className="p-3 text-sm font-medium text-gray-700">Name</th>
+            <th className="p-3 text-sm font-medium text-gray-700">Email</th>
+            <th className="p-3 text-sm font-medium text-gray-700">Role</th>
+            <th className="p-3 text-sm font-medium text-gray-700">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {staff.map((user) => (
-            <tr key={user.id} className="border-b">
-              <td className="p-2">{user.name}</td>
-              <td className="p-2">{user.email}</td>
-              <td className="p-2">
+          {users.map((user) => (
+            <tr key={user.id} className="border-t">
+              <td className="p-3 text-sm text-gray-900">
+                {user.firstName} {user.lastName}
+              </td>
+              <td className="p-3 text-sm text-gray-600">{user.email}</td>
+              <td className="p-3 text-sm text-gray-600">
                 <select
-                  defaultValue={user.role}
-                  onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                  className="border rounded p-1"
+                  value={user.role}
+                  onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
+                  className="border rounded-md p-1 text-sm"
+                  title="Select user role"
                 >
-                  <option>ADMIN</option>
-                  <option>PHARMACIST</option>
-                  <option>STOREKEEPER</option>
-                  <option>ACCOUNTANT</option>
-                  <option>USER</option>
+                  {Object.values(UserRole).map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
                 </select>
               </td>
-              <td className="p-2">
+              <td className="p-3 text-sm">
                 <button
-                  onClick={() => handleDelete(user.id)}
-                  className="text-red-600 hover:underline"
+                  onClick={() => console.log("Delete", user.id)}
+                  className="text-red-500 hover:text-red-700"
+                  title="Delete user"
                 >
                   Delete
                 </button>
@@ -61,7 +60,6 @@ export default function StaffTable({ staff }: { staff: any[] }) {
           ))}
         </tbody>
       </table>
-      {isPending && <p className="text-gray-500 mt-2">Updating...</p>}
     </div>
   );
 }
