@@ -14,13 +14,13 @@ datasource db {
 // ============================================
 
 enum UserRole {
-  SUPER_ADMIN
   ADMIN
   PHARMACIST
   PHARMACY_TECHNICIAN
+  STAFF
   INVENTORY_MANAGER
   AUDITOR
-  VIEWER
+  USER
 }
 
 enum DrugCategory {
@@ -139,7 +139,7 @@ model User {
   password  String
   firstName String
   lastName  String
-  role      UserRole  @default(VIEWER)
+  role      UserRole  @default(PHARMACIST)
   phone     String?
   isActive  Boolean   @default(true)
   lastLogin DateTime?
