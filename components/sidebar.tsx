@@ -1,13 +1,14 @@
 import { UserButton } from "@stackframe/stack";
-import { BarChart3, Package, PlusCircle, Settings2, Truck, Users } from "lucide-react";
+import { BarChart3, Package, PlusCircle, Settings2, Truck, Users, FileBarChart } from "lucide-react";
 import Link from "next/link";
 
 export default function Sidebar({
   currentPath = "/dashboard",
+  role = "ADMIN", // 👈 optionally pass from session/user
 }: {
   currentPath?: string;
+  role?: string;
 }) {
-  // ✅ Ensure currentPath is always a string
   const safePath = typeof currentPath === "string" ? currentPath : "/dashboard";
 
   const navigation = [
@@ -16,12 +17,14 @@ export default function Sidebar({
     { name: "Add Product", href: "/add-drug", icon: PlusCircle },
     { name: "Suppliers", href: "/suppliers", icon: Truck },
     { name: "Settings", href: "/settings", icon: Settings2 },
-    // ✅ Added for admin
     { name: "Manage Staff", href: "/admin/manage-staff", icon: Users, adminOnly: true },
+
+    // ✅ Added Reports link for Admin and Pharmacist
+    { name: "Reports", href: "/reports", icon: FileBarChart, roles: ["ADMIN", "PHARMACIST"] },
   ];
 
-  // TODO: Replace with actual role check (optional)
-  const isAdmin = true; // Example — set this dynamically from session/user.role
+  // Example role check (replace with real user role)
+  const userRole = role || "ADMIN";
 
   return (
     <div className="fixed left-0 top-0 bg-gray-900 text-white w-64 min-h-screen p-6 z-10">
@@ -40,7 +43,11 @@ export default function Sidebar({
         </div>
 
         {navigation
-          .filter((item) => !item.adminOnly || isAdmin)
+          .filter((item) => {
+            if (item.roles) return item.roles.includes(userRole);
+            if (item.adminOnly) return userRole === "ADMIN";
+            return true;
+          })
           .map((item, key) => {
             const IconComponent = item.icon;
             const isActive = safePath === item.href;
