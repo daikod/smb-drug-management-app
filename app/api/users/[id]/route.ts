@@ -18,15 +18,27 @@ export async function POST(req: Request) {
   return NextResponse.json(newUser);
 }
 
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+    const data = await req.json();
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-  const data = await req.json();
-  const staff = await prisma.user.update({
-    where: { id: params.id },
-    data: { role: data.role },
-  });
-  return NextResponse.json(staff);
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data,
+    });
+
+    return NextResponse.json(updatedUser);
+  } catch (error: any) {
+    console.error("PATCH /api/users/[id] error:", error);
+    return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
+  }
 }
+
+
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   await prisma.user.delete({ where: { id: params.id } });
