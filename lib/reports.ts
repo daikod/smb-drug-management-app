@@ -109,7 +109,7 @@ export async function getStockValueByCategory() {
 
   drugs.forEach((d) => {
     const cat = d.category ?? "OTHER";
-    let agg = map.get(cat) ?? { category: String(cat), value: 0, quantity: 0 };
+    const agg = map.get(cat) ?? { category: String(cat), value: 0, quantity: 0 };
     d.batches.forEach((b) => {
       const qty = Number(b.quantityAvailable || 0);
       const price = Number(b.unitPrice || 0);
