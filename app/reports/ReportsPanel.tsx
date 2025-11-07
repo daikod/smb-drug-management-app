@@ -12,6 +12,7 @@ import {
   ArcElement,
 } from "chart.js";
 import { Bar, Doughnut } from "react-chartjs-2";
+import Link from "next/link";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -91,6 +92,16 @@ export default function ReportsPanel() {
         <span className="text-sm bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
           Role: {role}
         </span>
+      </div>
+
+      {/* ✅ Return to Dashboard Link */}
+      <div className="flex justify-end">
+        <Link
+          href={role === "ADMIN" ? "/admin" : "/pharmacist"}
+          className="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+        >
+          ← Return to Dashboard
+        </Link>
       </div>
 
       {/* Charts Section */}

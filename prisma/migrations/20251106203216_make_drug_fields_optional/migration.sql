@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Drug" ALTER COLUMN "expiryDate" DROP NOT NULL,
+ALTER COLUMN "quantityAvailable" DROP NOT NULL,
+ALTER COLUMN "supplier" DROP NOT NULL,
+ALTER COLUMN "unitPrice" DROP NOT NULL;

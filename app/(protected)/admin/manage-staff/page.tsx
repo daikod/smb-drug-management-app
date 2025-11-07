@@ -19,6 +19,8 @@ export default async function ManageStaffPage() {
     firstName: true,
     lastName: true,
     email: true,
+    password: true,
+    lastLogin: true,
     role: true,
     phone: true,
     isActive: true,

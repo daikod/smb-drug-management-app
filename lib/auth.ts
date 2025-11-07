@@ -12,7 +12,7 @@ export async function getCurrentUser() {
   }
 
   // Safely extract identity info — adjust based on your Stack schema
-  const email = user.email ?? user.primaryEmail ?? "";
+  const email = user.id ?? user.primaryEmail ?? "";
   const firstName =
     (user.name && user.name.split(" ")[0]) ||
     user.firstName ||
