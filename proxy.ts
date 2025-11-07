@@ -16,7 +16,7 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const currentUser = await stackServerApp.getUser({ req });
+  const currentUser = await stackServerApp.getUser({ tokenStore: "nextjs-cookie" });
   if (!currentUser) {
     return NextResponse.redirect(new URL("/signin", req.url));
   }

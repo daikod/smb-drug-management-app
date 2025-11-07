@@ -13,14 +13,8 @@ export async function getCurrentUser() {
 
   // Safely extract identity info — adjust based on your Stack schema
   const email = user.id ?? user.primaryEmail ?? "";
-  const firstName =
-    (user.name && user.name.split(" ")[0]) ||
-    user.firstName ||
-    "New";
-  const lastName =
-    (user.name && user.name.split(" ")[1]) ||
-    user.lastName ||
-    "User";
+  const firstName = user.id || "New";
+  const lastName = user.id ||   "User";
 
   // Check if user exists in Prisma
   let dbUser = await prisma.user.findUnique({

@@ -1,6 +1,5 @@
 // lib/reports.ts
 import { prisma } from "@/lib/prisma";
-import type { UserRole } from "@prisma/client";
 
 /**
  * Reports library — server-only. Each function returns structured JSON ready for UI.
@@ -165,7 +164,7 @@ export async function getTurnover(days = 30) {
   });
 
   const totalRevenue = Number(aggregated._sum.totalPrice || 0);
-  const count = aggregated._count || 0;
+  const count = aggregated._count.id || 0;
   const avgOrder = count > 0 ? totalRevenue / count : 0;
 
   return { totalRevenue, count, avgOrder };
