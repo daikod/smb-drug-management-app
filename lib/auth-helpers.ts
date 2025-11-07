@@ -1,5 +1,6 @@
 // lib/auth-helpers.ts
 import { getCurrentUser } from '@/lib/auth';
+import { UserRole } from '@prisma/client';
 
 /**
  * Get user ID for database queries
