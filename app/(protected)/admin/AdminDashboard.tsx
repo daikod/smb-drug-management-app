@@ -2,6 +2,7 @@
 
 import { useEffect, useState, FormEvent } from "react";
 import { UserRole } from "@prisma/client";
+import Link from "next/link";
 
 interface User {
   id: string;
@@ -36,7 +37,7 @@ export default function AdminDashboard() {
     })();
   }, []);
 
-  // ✅ Create user (admin only, handled by /api/users POST)
+  // ✅ Create user (admin only)
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -50,10 +51,18 @@ export default function AdminDashboard() {
 
       if (res.ok) {
         alert("Staff created successfully!");
-        setForm({ firstName: "", lastName: "", email: "", role: "PHARMACIST", phone: "" });
+        setForm({
+          firstName: "",
+          lastName: "",
+          email: "",
+          role: "PHARMACIST",
+          phone: "",
+        });
 
-        // Refresh list
-        const updated = await fetch("/api/users", { credentials: "include" }).then(r => r.json());
+        // Refresh user list
+        const updated = await fetch("/api/users", {
+          credentials: "include",
+        }).then((r) => r.json());
         setUsers(updated);
       } else {
         const msg = await res.text();
@@ -66,18 +75,37 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-6">Admin Dashboard</h1>
+    <div className="p-6 space-y-6">
+      {/* Dashboard Header */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
 
+        {/* ✅ Navigation Buttons */}
+        <div className="space-x-2">
+          <Link
+            href="/admin/manage-staff"
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+          >
+            👥 Manage Staff
+          </Link>
+          <Link
+            href="/reports"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            📊 View Reports
+          </Link>
+        </div>
+      </div>
+
+      {/* Create New Staff */}
       <form
         onSubmit={handleSubmit}
-        className="mb-8 grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg"
+        className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm"
       >
         <input
           type="text"
           placeholder="First Name"
           className="p-2 border rounded"
-          aria-label="First Name"
           value={form.firstName}
           onChange={(e) => setForm({ ...form, firstName: e.target.value })}
           required
@@ -86,7 +114,6 @@ export default function AdminDashboard() {
           type="text"
           placeholder="Last Name"
           className="p-2 border rounded"
-          aria-label="Last Name"
           value={form.lastName}
           onChange={(e) => setForm({ ...form, lastName: e.target.value })}
           required
@@ -95,7 +122,6 @@ export default function AdminDashboard() {
           type="email"
           placeholder="Email"
           className="p-2 border rounded"
-          aria-label="Email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
           required
@@ -104,13 +130,11 @@ export default function AdminDashboard() {
           type="text"
           placeholder="Phone"
           className="p-2 border rounded"
-          aria-label="Phone"
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
         />
         <select
           className="p-2 border rounded"
-          aria-label="Select Role"
           value={form.role}
           onChange={(e) => setForm({ ...form, role: e.target.value })}
           required
@@ -126,31 +150,46 @@ export default function AdminDashboard() {
           type="submit"
           className="col-span-2 bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
         >
-          Add Staff
+          ➕ Add Staff
         </button>
       </form>
 
-      <h2 className="text-xl mb-4">Existing Users</h2>
-      <table className="w-full text-left border border-gray-200 rounded">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="p-2 border">Name</th>
-            <th className="p-2 border">Email</th>
-            <th className="p-2 border">Role</th>
-            <th className="p-2 border">Phone</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((u) => (
-            <tr key={u.id}>
-              <td className="p-2 border">{u.firstName} {u.lastName}</td>
-              <td className="p-2 border">{u.email}</td>
-              <td className="p-2 border">{u.role}</td>
-              <td className="p-2 border">{u.phone || "-"}</td>
+      {/* Existing Users */}
+      <div className="bg-white rounded-lg shadow border border-gray-100 overflow-hidden">
+        <h2 className="text-lg font-semibold px-4 py-3 bg-gray-50 border-b">
+          Existing Users
+        </h2>
+        <table className="w-full text-left text-sm">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="p-2 border">Name</th>
+              <th className="p-2 border">Email</th>
+              <th className="p-2 border">Role</th>
+              <th className="p-2 border">Phone</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="text-center p-4 text-gray-500">
+                  No users found.
+                </td>
+              </tr>
+            ) : (
+              users.map((u) => (
+                <tr key={u.id} className="hover:bg-gray-50">
+                  <td className="p-2 border">
+                    {u.firstName} {u.lastName}
+                  </td>
+                  <td className="p-2 border">{u.email}</td>
+                  <td className="p-2 border">{u.role}</td>
+                  <td className="p-2 border">{u.phone || "-"}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

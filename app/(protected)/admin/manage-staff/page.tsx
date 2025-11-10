@@ -8,7 +8,7 @@ export default async function ManageStaffPage() {
   const currentUser = await getCurrentUser();
 
   if (currentUser.role !== "ADMIN") {
-    redirect("/dashboard"); // or redirect("/dashboard")
+    redirect("manage-staff"); // or redirect("/dashboard")
   }
 
   const users = await prisma.user.findMany({

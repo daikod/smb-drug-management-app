@@ -1,5 +1,6 @@
+import ManageStaffPage from "@/app/(protected)/admin/manage-staff/page";
 import { UserButton } from "@stackframe/stack";
-import { BarChart3, Package, PlusCircle, Settings2, Truck, Users, FileBarChart } from "lucide-react";
+import { BarChart3, Package, PlusCircle, Settings2, Truck, Users, FileBarChart, Users2 } from "lucide-react";
 import Link from "next/link";
 
 export default function Sidebar({
@@ -19,11 +20,13 @@ export default function Sidebar({
     { name: "Settings", href: "/settings", icon: Settings2 },
     { name: "Manage Staff", href: "/admin/manage-staff", icon: Users, adminOnly: true },
 
+  
+
     // ✅ Added Reports link for Admin and Pharmacist
     { name: "Reports", href: "/reports", icon: FileBarChart, roles: ["ADMIN", "PHARMACIST"] },
   ];
 
-  // Example role check (replace with real user role)
+   // Example role check (replace with real user role)
   const userRole = role || "ADMIN";
 
   return (

@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { UserRole } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 
@@ -23,7 +24,7 @@ export async function createUser({
       firstName,
       lastName,
       email,
-      role: role as any,
+      role: role as UserRole,
       password: hashedPassword,
     },
   });
@@ -36,7 +37,7 @@ export async function deleteStaff(id: string) {
 }
 
 export async function updateRole(id: string, role: string) {
-  await prisma.user.update({ where: { id }, data: { role: role as any } });
+  await prisma.user.update({ where: { id }, data: { role: role as UserRole } });
 }
 
 export async function listStaff() {

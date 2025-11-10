@@ -91,7 +91,7 @@ export default async function DashboardPage() {
             <p className="text-gray-500 text-center py-4">No low stock items</p>
           ) : (
             <div className="space-y-4">
-              {lowStockDrugs.map((drug: any) => (
+              {lowStockDrugs.map((drug) => (
                 <div
                   key={drug.id}
                   className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
@@ -143,7 +143,7 @@ export default async function DashboardPage() {
             <p className="text-gray-500 text-center py-4">No expiring drugs</p>
           ) : (
             <div className="space-y-4">
-              {expiringDrugs.map((drug: any) => (
+              {expiringDrugs.map((drug) => (
                 <div
                   key={drug.id}
                   className="p-4 bg-orange-50 border border-orange-200 rounded-lg"
@@ -163,7 +163,7 @@ export default async function DashboardPage() {
                     </div>
                   </div>
                   <div className="mt-3 space-y-1">
-                    {drug.batches.slice(0, 3).map((batch: any) => (
+                    {drug.batches.slice(0, 3).map((batch) => (
                       <div key={batch.id} className="text-xs text-gray-600 flex justify-between">
                         <span>Batch: {batch.batchNumber}</span>
                         <span>
@@ -205,7 +205,7 @@ export default async function DashboardPage() {
                   </td>
                 </tr>
               ) : (
-                recentTransactions.map((transaction: any) => (
+                recentTransactions.map((transaction) => (
                   <tr key={transaction.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm text-gray-900">
                       {new Date(transaction.transactionDate).toLocaleDateString()}

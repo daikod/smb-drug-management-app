@@ -45,8 +45,14 @@ export default function ReportsPanel() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ drugs: data.drugs, role: data.role }),
         });
-        const summaryData = await summaryRes.json();
-        setAiSummary(summaryData.summary || "No insights available.");
+        let summaryData: any = {};
+          try {
+            const text = await summaryRes.text();
+            summaryData = text ? JSON.parse(text) : {};
+          } catch {
+            summaryData = {};
+      }
+      setAiSummary(summaryData.summary || "No insights available.");
       } catch (err) {
         console.error("Error loading reports:", err);
         setAiSummary("Unable to generate summary.");
