@@ -136,7 +136,7 @@ enum AuditStatus {
 model User {
   id        String    @id @default(cuid())
   email     String    @unique
-  password  String
+  password  String?
   firstName String
   lastName  String
   role      UserRole  @default(PHARMACIST)

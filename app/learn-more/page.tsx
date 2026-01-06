@@ -2,6 +2,17 @@
 
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import {
+  Hospital,
+  Cpu,
+  CreditCard,
+  Truck,
+  Building,
+  BarChart3,
+  Lock,
+  Smartphone,
+  Zap,
+} from 'lucide-react';
 
 export default function LearnMore() {
   const router = useRouter();
@@ -30,71 +41,69 @@ export default function LearnMore() {
     return () => observer.disconnect();
   }, []);
 
-  const handleReturnToSignIn = () => {
-    router.push('/sign-in');
-  };
+  const handleReturnToSignIn = () => router.push('/sign-in');
 
   const features = [
     {
-      icon: '🏥',
+      icon: <Hospital size={48} />,
       title: 'Broad Institutional Use',
-      description: 'Designed for hospitals, clinics, pharmacies, and distribution centers. Our scalable architecture adapts to organizations of all sizes, from single-location pharmacies to multi-facility healthcare networks, ensuring seamless integration across your entire operation.'
+      description: 'Designed for hospitals, clinics, pharmacies, and distribution centers...',
     },
     {
-      icon: '🤖',
+      icon: <Cpu size={48} />,
       title: 'Enhanced AI Analytics',
-      description: 'Leverage artificial intelligence to predict demand patterns, optimize stock levels, and prevent shortages. Our advanced analytics engine provides actionable insights, identifying trends and anomalies to help you make data-driven decisions that reduce waste and improve patient care.'
+      description: 'Leverage artificial intelligence to predict demand patterns...',
     },
     {
-      icon: '💳',
+      icon: <CreditCard size={48} />,
       title: 'Transaction Processing',
-      description: 'Process orders, sales, and transfers with lightning speed. Our robust transaction system handles complex workflows including prescription processing, insurance claims, batch tracking, and automated billing with complete accuracy and compliance.'
+      description: 'Process orders, sales, and transfers with lightning speed...',
     },
     {
-      icon: '🚚',
+      icon: <Truck size={48} />,
       title: 'Supply Chain Management',
-      description: 'Track drug supplies from manufacturer to patient. Monitor shipments in real-time, manage vendor relationships, automate reordering, and maintain optimal inventory levels across multiple locations with intelligent distribution algorithms.'
+      description: 'Track drug supplies from manufacturer to patient...',
     },
     {
-      icon: '🏢',
+      icon: <Building size={48} />,
       title: 'Institutional Remittance',
-      description: 'Streamline drug distribution to partner institutions with automated remittance tracking, delivery confirmation, and reconciliation. Generate detailed reports for auditing and compliance while maintaining complete traceability of every transaction.'
+      description: 'Streamline drug distribution to partner institutions...',
     },
     {
-      icon: '📊',
+      icon: <BarChart3 size={48} />,
       title: 'Comprehensive Reporting',
-      description: 'Access detailed reports on inventory levels, expiration dates, sales trends, and financial metrics. Export data in multiple formats, schedule automated reports, and visualize key performance indicators through intuitive dashboards.'
+      description: 'Access detailed reports on inventory levels, expiration dates, and sales trends...',
     },
     {
-      icon: '🔒',
+      icon: <Lock size={48} />,
       title: 'Security & Compliance',
-      description: 'Meet regulatory requirements with built-in compliance features. Our system ensures data security through encryption, role-based access control, audit trails, and adherence to pharmaceutical industry standards and healthcare regulations.'
+      description: 'Meet regulatory requirements with built-in compliance features...',
     },
     {
-      icon: '📱',
+      icon: <Smartphone size={48} />,
       title: 'Mobile Accessibility',
-      description: 'Manage your inventory on the go with our responsive design. Access critical information, approve transactions, and receive alerts from any device, ensuring you stay connected to your operations 24/7.'
+      description: 'Manage your inventory on the go with our responsive design...',
     },
     {
-      icon: '⚡',
+      icon: <Zap size={48} />,
       title: 'Real-Time Synchronization',
-      description: 'All your locations stay synchronized in real-time. Updates are instant across the entire network, preventing stock discrepancies and ensuring accurate inventory counts at every facility.'
-    }
+      description: 'All your locations stay synchronized in real-time...',
+    },
   ];
 
   return (
     <div className="min-h-screen p-5" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
       <div className="max-w-7xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
         <div className="relative text-white px-10 py-16 text-center overflow-hidden" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-            <div className="absolute inset-0 opacity-10">
-                <div className="absolute inset-0 animate-float" style={{ 
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0 animate-float" style={{ 
               background: 'radial-gradient(circle, white 1px, transparent 1px)',
               backgroundSize: '50px 50px'
-                }} />
-                </div>
+            }} />
+          </div>
           <h1 className="relative z-10 text-5xl font-bold mb-3">SM Balgwe Drug Inventory</h1>
           <p className="relative z-10 text-xl opacity-90">Next-Generation Pharmaceutical Management System</p>
-            </div>
+        </div>
 
         <div className="px-10 py-16">
           <div className="text-center mb-16">
@@ -102,7 +111,7 @@ export default function LearnMore() {
               Revolutionizing Drug Inventory Management
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed max-w-4xl mx-auto">
-              SM Balgwe Drug Inventory Management Application is a comprehensive pharmaceutical management solution designed to streamline operations across healthcare institutions, pharmacies, and distribution networks. Our platform combines cutting-edge technology with intuitive design to deliver unparalleled efficiency in drug inventory control.
+              SM Balgwe Drug Inventory Management Application is a comprehensive pharmaceutical management solution...
             </p>
           </div>
 
@@ -115,7 +124,7 @@ export default function LearnMore() {
                 style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}
               >
                 <div className="absolute top-0 left-0 w-full h-1.5" style={{ background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)' }} />
-                <div className="text-5xl mb-4">{feature.icon}</div>
+                <div className="text-primary mb-4">{feature.icon}</div>
                 <h3 className="text-gray-800 text-2xl font-bold mb-4">{feature.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{feature.description}</p>
               </div>
@@ -132,7 +141,7 @@ export default function LearnMore() {
               className="inline-block px-10 py-4 bg-white rounded-full font-bold text-lg transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-2xl hover:bg-gray-50"
               style={{ color: '#667eea' }}
             >
-                Return to Sign In
+              Return to Sign In
             </button>
           </div>
         </div>

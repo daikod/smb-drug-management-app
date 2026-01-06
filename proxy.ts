@@ -3,9 +3,15 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { stackServerApp } from "@/stack/server";
 import { prisma } from "@/lib/prisma";
-import { CurrentServerUser } from "@stackframe/stack";
+import type { CurrentServerUser } from "@stackframe/stack";
 
-// Extend CurrentServerUser to safely include optional email sources
+// Extended type to include optional email
+interface ExtendedUser extends CurrentServerUser {
+  email?: string | null;
+  data?: { email?: string | null };
+  fields?: { email?: string | null };
+  role?: "ADMIN" | "PHARMACIST" | null;
+}
 
 export async function proxy(request: NextRequest) {
   try {
@@ -22,19 +28,10 @@ export async function proxy(request: NextRequest) {
       return NextResponse.next();
     }
 
-    // Retrieve the current user from Stack
-    interface ExtendedUser extends CurrentServerUser {
-  email?: string | null;
-  data?: { email?: string | null };
-  fields?: { email?: string | null };
-  role?: "ADMIN" | "PHARMACIST" | null;
-}
-
-const rawUser = await stackServerApp.getUser();
-const currentUser = rawUser as ExtendedUser;
+    const rawUser = (await stackServerApp.getUser()) as ExtendedUser;
 
     // Redirect unauthenticated users from protected areas
-    if (!currentUser) {
+    if (!rawUser) {
       if (
         pathname.startsWith("/admin") ||
         pathname.startsWith("/pharmacist") ||
@@ -46,12 +43,12 @@ const currentUser = rawUser as ExtendedUser;
       return NextResponse.next();
     }
 
-    // Prefer lookup by ID, fallback to email
-    const userId = currentUser.id ?? null;
+    // Prefer lookup by ID, fallback to email safely
+    const userId = rawUser.id ?? null;
     const userEmail =
-      currentUser.email ??
-      currentUser.data?.email ??
-      currentUser.fields?.email ??
+      rawUser.email ??
+      rawUser.data?.email ??
+      rawUser.fields?.email ??
       null;
 
     let user = null;
@@ -74,16 +71,16 @@ const currentUser = rawUser as ExtendedUser;
     console.log("Proxy: user.role=", user.role, "path=", pathname);
 
     // Role-based route enforcement
-    if (pathname.startsWith("/admin") && user.role == "ADMIN") {
-      return NextResponse.redirect(new URL("/admin", request.url));
+    if (pathname.startsWith("/admin") && user.role === "ADMIN") {
+      return NextResponse.next();
     }
 
-    if (pathname.startsWith("/pharmacist") && user.role == "PHARMACIST") {
-      if (user.role === "PHARMACIST") {
-        return NextResponse.redirect(new URL("/pharmacist", request.url));
-      }
+    if (pathname.startsWith("/pharmacist") && user.role === "PHARMACIST") {
+      return NextResponse.next();
+    }
 
- 
+    // Default fallback for unauthorized access
+    if (pathname.startsWith("/admin") || pathname.startsWith("/pharmacist")) {
       return NextResponse.redirect(new URL("/", request.url));
     }
 

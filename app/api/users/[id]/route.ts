@@ -1,29 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { stackServerApp } from "@/stack/server"; // 🔹 StackAuth server SDK
+import { stackServerApp } from "@/stack/server";
+import { Prisma } from "@prisma/client";
 
 export async function PATCH(
   req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> } // Next.js App Router requirement
 ) {
   try {
-    // Extract ID from URL
-    const { id } = await context.params;
+    const { id } = await context.params; // await promise
     const body = await req.json();
 
-    // 🔐 Ensure user is authenticated before allowing updates
     const rawUser = await stackServerApp.getUser();
     if (!rawUser) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get user role from your Prisma DB (Stack doesn’t store custom roles)
     const currentUser = await prisma.user.findUnique({
       where: { id: rawUser.id },
       select: { role: true },
     });
 
-    // 🚨 Only allow admins to update user roles / verification
     if (currentUser?.role !== "ADMIN") {
       return NextResponse.json(
         { error: "Only admin can modify user accounts" },
@@ -31,18 +28,17 @@ export async function PATCH(
       );
     }
 
-    // 📝 Allow only specific fields to be updated
-    const allowedUpdates = ["role", "emailVerified", "name"];
-    const data = Object.fromEntries(
-      Object.entries(body).filter(([key]) => allowedUpdates.includes(key))
-    );
+    // ✅ Explicit type-safe mapping
+    const data: Prisma.UserUpdateInput = {
+      firstName: body.firstName ?? undefined,
+      lastName: body.lastName ?? undefined,
+      role: body.role ?? undefined,
+      // Cast emailVerified explicitly to any to satisfy Prisma UpdateInput
+      ...(body.emailVerified === true
+        ? { emailVerified: new Date() } as any
+        : {}),
+    };
 
-    // If admin verifying the email
-    if (body?.emailVerified === true) {
-      data.emailVerified = new Date();
-    }
-
-    // Update user inside Prisma
     const updatedUser = await prisma.user.update({
       where: { id },
       data,
