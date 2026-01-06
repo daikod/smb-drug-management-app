@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 export default function PharmacistDashboard() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [report, setReport] = useState<any>(null);
 
   useEffect(() => {

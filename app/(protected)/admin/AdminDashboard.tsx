@@ -28,7 +28,7 @@ export default function AdminDashboard() {
     (async () => {
       try {
         const res = await fetch("/api/users", { credentials: "include" });
-        if (!res.ok) throw new Error("Failed to load users");
+        if (!res.ok) throw Error("Failed to load users");
         const data = await res.json();
         setUsers(data);
       } catch (error) {

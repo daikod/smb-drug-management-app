@@ -140,6 +140,7 @@ model User {
   firstName String
   lastName  String
   role      UserRole  @default(PHARMACIST)
+  emailVerified DateTime?
   phone     String?
   isActive  Boolean   @default(true)
   lastLogin DateTime?

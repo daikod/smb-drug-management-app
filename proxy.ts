@@ -3,15 +3,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { stackServerApp } from "@/stack/server";
 import { prisma } from "@/lib/prisma";
+import { CurrentServerUser } from "@stackframe/stack";
 
 // Extend CurrentServerUser to safely include optional email sources
-interface SafeCurrentUser {
-  id?: string | null;
-  email?: string | null;
-  role?: string | null;
-  data?: { email?: string | null };
-  fields?: { email?: string | null };
-}
 
 export async function proxy(request: NextRequest) {
   try {
@@ -21,6 +15,7 @@ export async function proxy(request: NextRequest) {
     if (
       pathname === "/" ||
       pathname.startsWith("/signin") ||
+      pathname.startsWith("/signup") ||
       pathname.startsWith("/api") ||
       pathname.startsWith("/favicon.ico")
     ) {
@@ -28,8 +23,15 @@ export async function proxy(request: NextRequest) {
     }
 
     // Retrieve the current user from Stack
-    const rawUser = await stackServerApp.getUser();
-    const currentUser = rawUser as unknown as SafeCurrentUser;
+    interface ExtendedUser extends CurrentServerUser {
+  email?: string | null;
+  data?: { email?: string | null };
+  fields?: { email?: string | null };
+  role?: "ADMIN" | "PHARMACIST" | null;
+}
+
+const rawUser = await stackServerApp.getUser();
+const currentUser = rawUser as ExtendedUser;
 
     // Redirect unauthenticated users from protected areas
     if (!currentUser) {
@@ -72,14 +74,16 @@ export async function proxy(request: NextRequest) {
     console.log("Proxy: user.role=", user.role, "path=", pathname);
 
     // Role-based route enforcement
-    if (pathname.startsWith("/admin") && user.role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/pharmacist", request.url));
+    if (pathname.startsWith("/admin") && user.role == "ADMIN") {
+      return NextResponse.redirect(new URL("/admin", request.url));
     }
 
-    if (pathname.startsWith("/pharmacist") && user.role !== "PHARMACIST") {
-      if (user.role === "ADMIN") {
-        return NextResponse.redirect(new URL("/admin", request.url));
+    if (pathname.startsWith("/pharmacist") && user.role == "PHARMACIST") {
+      if (user.role === "PHARMACIST") {
+        return NextResponse.redirect(new URL("/pharmacist", request.url));
       }
+
+ 
       return NextResponse.redirect(new URL("/", request.url));
     }
 

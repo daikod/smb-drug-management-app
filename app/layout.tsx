@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SM Balgwe Drug Management Application",
+  title: "AI Drug Management Application",
   description: "Developed by Dr Philip Ikeme",
 };
 

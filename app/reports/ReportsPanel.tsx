@@ -45,14 +45,15 @@ export default function ReportsPanel() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ drugs: data.drugs, role: data.role }),
         });
+        
         let summaryData: any = {};
-          try {
-            const text = await summaryRes.text();
-            summaryData = text ? JSON.parse(text) : {};
-          } catch {
-            summaryData = {};
-      }
-      setAiSummary(summaryData.summary || "No insights available.");
+        try {
+          const text = await summaryRes.text();
+          summaryData = text ? JSON.parse(text) : {};
+        } catch {
+          summaryData = {};
+        }
+        setAiSummary(summaryData.summary || "No insights available.");
       } catch (err) {
         console.error("Error loading reports:", err);
         setAiSummary("Unable to generate summary.");
@@ -103,7 +104,7 @@ export default function ReportsPanel() {
       {/* ✅ Return to Dashboard Link */}
       <div className="flex justify-end">
         <Link
-          href={role === "ADMIN" ? "/admin" : "/pharmacist"}
+          href={role === "ADMIN" ? "/dashboard" : "/pharmacist"}
           className="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
         >
           ← Return to Dashboard
